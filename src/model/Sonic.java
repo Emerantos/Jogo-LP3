@@ -44,7 +44,6 @@ public class Sonic {
             try {
                 spriteSheet = ImageIO.read(new File("assets\\sonicCorrendo2.png"));
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             frameWidth = 128;  // Ajuste conforme necessário
@@ -71,7 +70,15 @@ public class Sonic {
 
         currentFrame = 0; // Inicializa o índice do quadro atual
     }
+    // Adicionado: Retorna a largura do Sonic
+    public int getLargura() {
+        return frameWidth; // Ou qualquer valor apropriado para a largura do Sonic
+    }
 
+    // Adicionado: Retorna a altura do Sonic
+    public int getAltura() {
+        return frameHeight; // Ou qualquer valor apropriado para a altura do Sonic
+    }
     // Método para obter o quadro atual na animação
     public BufferedImage getCurrentFrame() {
         return frames[currentFrame];
