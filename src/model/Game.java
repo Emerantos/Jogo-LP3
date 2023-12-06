@@ -1,4 +1,6 @@
 package model;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -8,10 +10,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Game extends JPanel {
 
@@ -25,7 +31,12 @@ public class Game extends JPanel {
     private int x = 21;
 	public static double velocidade = 1;
 	private double fatorAcelerar = 0.05;
+	private JLabel temp;
+	private double tempo; // Nova variável para contar os segundos
+	Font fonte = new Font("Arial", Font.BOLD, 20);
+	Color cor = Color.WHITE;
 
+	
     public Game(){
 
         addKeyListener(new KeyListener() {
@@ -66,6 +77,14 @@ public class Game extends JPanel {
 			
 		}, 0, 3000);
 		
+		Timer timerTempo = new Timer();
+		timerTempo.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				tempo++;
+			}
+		}, 0, 1000);
+
 		new Thread(() -> {
 			while (true) {
 				eventosTeclado();
@@ -109,13 +128,13 @@ public class Game extends JPanel {
             
         }
 	}
+
 	public void atualizar() {
 		velocidade += fatorAcelerar;
 		sonic.posX = sonic.posX + sonic.velX;
 		sonic.posY = sonic.posY + sonic.velY;
 	
 		verificarColisao(); 
-		System.out.println(velocidade);
 		if(velocidade == 30.00000000000029 || velocidade == 60.99999999999867){
 			sonic.initializeFrames();
 		}
@@ -124,6 +143,7 @@ public class Game extends JPanel {
 		for (DoutorEggman obstaculo : obstaculos) {
 			obstaculo.mover();
 		}
+		
 	}
 
 	public void paint(Graphics g) {
@@ -136,6 +156,13 @@ public class Game extends JPanel {
 		for (DoutorEggman obstaculo : obstaculos) {
 			obstaculo.desenhar(graficos);
 		}
+
+		graficos.setFont(fonte);
+		graficos.setColor(cor);
+
+		// Desenha o tempo na tela
+		graficos.drawString("Tempo: " + tempo, 15, 25);
+
 		g.dispose();
 	}
 	
@@ -143,23 +170,12 @@ public class Game extends JPanel {
 		obstaculos.add(new DoutorEggman(999, 550));
 
 	}
-	
-	public void criarObstaculo2() {
-		obstaculos.add(new DoutorEggman3(999, 550));
-	}
 
-	public void criarObstaculo3() {
-
-		obstaculos.add(new DoutorEggman2(999, 550));
-	}
 
 	private void criarObstaculoAleatorio() {
         // Lista de funções para criar obstáculos
         List<Consumer<Game>> criadoresObstaculos = Arrays.asList(
-            Game::criarObstaculo,
-            Game::criarObstaculo2,
-            Game::criarObstaculo3
-            // Adicione mais funções conforme necessário
+            Game::criarObstaculo
         );
 
         // Escolhe aleatoriamente uma função e a executa
@@ -174,7 +190,8 @@ public class Game extends JPanel {
 				sonic.posY < obstaculo.getY() + obstaculo.getAltura() &&
 				sonic.posY + sonic.getAltura() > obstaculo.getY())
 				{
-					encerrarJogo(); 
+					
+					salvaRecorde(tempo);
 
 				}
 		}
@@ -185,4 +202,26 @@ public class Game extends JPanel {
 		System.exit(0);
 	}
 
+	private void salvaRecorde (double tempo){
+
+		 try {
+            String caminhoArquivo = "record\\tempo.txt";
+
+            FileWriter fileWriter = new FileWriter(caminhoArquivo);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+
+            printWriter.printf("%.1f", tempo);
+
+            printWriter.close();
+            fileWriter.close();
+
+            encerrarJogo(); 
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
+
+

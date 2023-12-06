@@ -10,10 +10,12 @@ import javax.swing.ImageIcon;
 public class DoutorEggman {
 
 	protected double x;
-	private int y;
-	private int largura;  // Adicionado
-    private int altura;   // Adicionado
-	private Image imagemObstaculo;
+	protected int y;
+	protected int largura;  
+    private int altura;   
+	protected Image imagemObstaculo;
+	private int larguraColisao; 
+    private int alturaColisao;
 
 	public DoutorEggman(int x, int y) {
 		this.x = x;
@@ -25,6 +27,9 @@ public class DoutorEggman {
 		// Define as dimensões do obstáculo (largura e altura)
 		largura = imagemObstaculo.getWidth(null);
 		altura = imagemObstaculo.getHeight(null);
+		//Proporção da colisão
+		larguraColisao = (int) (largura * 0.8);
+        alturaColisao = (int) (altura * 0.8);
 
 		new Thread(() -> {
 			while (true) {
@@ -80,13 +85,14 @@ public class DoutorEggman {
 		x = x + (-1*Game.velocidade);
 	}
 
-	public void desenhar(Graphics g) {
+
+    public void desenhar(Graphics g) {
         Graphics2D graficos = (Graphics2D) g;
 
         graficos.drawImage(imagemObstaculo, (int) x, y, null);
 
         graficos.setColor(Color.RED);
-        graficos.drawRect((int) x, y, largura, altura);
+        graficos.drawRect((int) x, y, larguraColisao, alturaColisao);
     }
 
  
