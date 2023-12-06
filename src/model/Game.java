@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Consumer;
@@ -19,6 +20,7 @@ import controller.MainController;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,11 +37,9 @@ public class Game extends JPanel {
 	private int x = 21;
 	public static double velocidade = 1;
 	private double fatorAcelerar = 0.05;
-	private JLabel temp;
-	private double tempo;
+	private static double tempo;
 	private boolean jogoEncerrado = false;
 	Timer timerTempo;
-	private GameOver gameOver;
 	private volatile boolean gameRunning = true;
 
 	Font fonte = new Font("Arial", Font.BOLD, 20);
@@ -222,20 +222,49 @@ public class Game extends JPanel {
 	}
 
 	private void salvaRecorde(double tempo) {
+
 		try {
 			String caminhoArquivo = "record\\tempo.txt";
-
+	
+			if (tempo > lerTempoDoArquivo()) {
+				String caminhoArquivo2 = "record\\record.txt";
+	
+				FileWriter fileWriter2 = new FileWriter(caminhoArquivo2);
+				PrintWriter printWriter2 = new PrintWriter(fileWriter2);
+	
+				printWriter2.printf("%.1f", tempo);
+	
+				printWriter2.close();
+				fileWriter2.close();
+			}
+	
 			FileWriter fileWriter = new FileWriter(caminhoArquivo);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-
+	
 			printWriter.printf("%.1f", tempo);
-
+	
 			printWriter.close();
 			fileWriter.close();
-
+	
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+	
+
+	private double lerTempoDoArquivo() {
+        try {
+            String caminhoArquivo = "record\\record.txt";
+            
+            /* tempo usuario e tempo record  */
+            Scanner scanner = new Scanner(new File(caminhoArquivo));
+            if (scanner.hasNextDouble()) {
+                return scanner.nextDouble();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0.0;  
+    }
 
 }
