@@ -7,20 +7,14 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Consumer;
-
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import controller.MainController;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,19 +22,18 @@ import java.io.PrintWriter;
 public class Game extends JPanel {
 
 	private Fundo fundo;
-	private List<DoutorEggman> obstaculos;
+	public static List<DoutorEggman> obstaculos;
 	public int cont;
-	private Sonic sonic;
+	public static Sonic sonic;
 	private BufferedImage imgAtual;
-	private boolean k_cima = false;
-	private boolean k_baixo = false;
+	public static boolean k_cima = false;
+	public static boolean k_baixo = false;
 	private int x = 21;
 	public static double velocidade = 1;
 	private double fatorAcelerar = 0.05;
-	private static double tempo;
-	private boolean jogoEncerrado = false;
-	Timer timerTempo;
-	private volatile boolean gameRunning = true;
+	public static double tempo;
+	public static boolean jogoEncerrado = false;
+	public static Timer timerTempo;
 
 	Font fonte = new Font("Arial", Font.BOLD, 20);
 	Color cor = Color.WHITE;
@@ -99,14 +92,14 @@ public class Game extends JPanel {
 		timerTempo.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				if (!jogoEncerrado) {
+				if (jogoEncerrado == false) {
 					tempo++;
 				}
 			}
 		}, 0, 1000);
 
 		new Thread(() -> {
-			while (gameRunning) {
+			while (true) {
 				eventosTeclado();
 				atualizar();
 				repaint();
@@ -119,8 +112,12 @@ public class Game extends JPanel {
 		}).start();
 	}
 
+	public static void gameloop() {
+
+	}
+
 	public void eventosTeclado() {
-		sonic.velX = 0;
+		requestFocus();
 		sonic.velY = 0;
 		imgAtual = sonic.getCurrentFrame();
 		if (k_cima == true || sonic.teste) {
@@ -151,11 +148,10 @@ public class Game extends JPanel {
 
 	public void atualizar() {
 		velocidade += fatorAcelerar;
-		sonic.posX = sonic.posX + sonic.velX;
 		sonic.posY = sonic.posY + sonic.velY;
 
 		verificarColisao();
-		if (velocidade == 30.00000000000029 || velocidade == 60.99999999999867) {
+		if ((tempo == 10 && sonic.sprite == true) || (tempo == 20 && sonic.sprite == false)) {
 			sonic.initializeFrames();
 		}
 		sonic.nextFrame();
@@ -214,7 +210,6 @@ public class Game extends JPanel {
 
 	private void encerrarJogo() {
 		jogoEncerrado = true;
-		gameRunning = false;
 		timerTempo.cancel();
 		salvaRecorde(tempo);
 
@@ -222,49 +217,20 @@ public class Game extends JPanel {
 	}
 
 	private void salvaRecorde(double tempo) {
-
 		try {
 			String caminhoArquivo = "record\\tempo.txt";
-	
-			if (tempo > lerTempoDoArquivo()) {
-				String caminhoArquivo2 = "record\\record.txt";
-	
-				FileWriter fileWriter2 = new FileWriter(caminhoArquivo2);
-				PrintWriter printWriter2 = new PrintWriter(fileWriter2);
-	
-				printWriter2.printf("%.1f", tempo);
-	
-				printWriter2.close();
-				fileWriter2.close();
-			}
-	
+
 			FileWriter fileWriter = new FileWriter(caminhoArquivo);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-	
+
 			printWriter.printf("%.1f", tempo);
-	
+
 			printWriter.close();
 			fileWriter.close();
-	
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-
-	private double lerTempoDoArquivo() {
-        try {
-            String caminhoArquivo = "record\\record.txt";
-            
-            /* tempo usuario e tempo record  */
-            Scanner scanner = new Scanner(new File(caminhoArquivo));
-            if (scanner.hasNextDouble()) {
-                return scanner.nextDouble();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return 0.0;  
-    }
 
 }
