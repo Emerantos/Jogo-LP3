@@ -4,7 +4,9 @@ import controller.MainController;
 
 public class Main {
     public static void main(String[] args) {
-        MainController.getInstance().init();
-        MainController.getInstance().telaInicial();
+
+        telainicio telainicio = new telainicio();
+        telainicio.setVisible(true);
+        
     }
 }
