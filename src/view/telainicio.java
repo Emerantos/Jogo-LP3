@@ -42,7 +42,7 @@ public class telainicio extends JFrame {
         mainPanel.setLayout(null);
 
         JLabel titleLabel = new JLabel("Bem-vindo ao nosso jogo!");
-        titleLabel.setBounds(120, 70, 400, 20);
+        titleLabel.setBounds(220, 100, 400, 40);
         titleLabel.setForeground(Color.white);
 
         Font titleFont = new Font("Arial", Font.BOLD, 25); // Substitua pelos valores desejados
@@ -50,8 +50,8 @@ public class telainicio extends JFrame {
 
         JButton startButton = new JButton("Iniciar Jogo");
         JButton exitButton = new JButton("Sair do Jogo");
-        startButton.setBounds(100, 400, 150, 40);
-        exitButton.setBounds(320, 400, 150, 40);
+        startButton.setBounds(200, 400, 150, 40);
+        exitButton.setBounds(400, 400, 150, 40);
 
         startButton.addActionListener(new ActionListener() {
             @Override

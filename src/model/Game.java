@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Consumer;
@@ -15,6 +16,8 @@ import controller.MainController;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -37,6 +40,8 @@ public class Game extends JPanel {
 
 	Font fonte = new Font("Arial", Font.BOLD, 20);
 	Color cor = Color.WHITE;
+	private Font fonteRecorde = new Font("Arial", Font.BOLD, 20);
+	private Color corRecorde = Color.YELLOW;
 
 	public Game() {
 
@@ -178,6 +183,9 @@ public class Game extends JPanel {
 
 		// Desenha o tempo na tela
 		graficos.drawString("Tempo: " + tempo, 15, 25);
+		graficos.setFont(fonteRecorde);
+		graficos.setColor(corRecorde);
+		graficos.drawString("Recorde: " + lerRecordeAtual("record\\record.txt"), 15, 50);
 
 		g.dispose();
 	}
@@ -217,20 +225,46 @@ public class Game extends JPanel {
 	}
 
 	private void salvaRecorde(double tempo) {
-		try {
-			String caminhoArquivo = "record\\tempo.txt";
+   		try {
+        	String caminhoArquivo = "record\\record.txt";
 
-			FileWriter fileWriter = new FileWriter(caminhoArquivo);
-			PrintWriter printWriter = new PrintWriter(fileWriter);
+       		// Lê o tempo atual do recorde, se existir
+        	double recordeAtual = lerRecordeAtual(caminhoArquivo);
 
-			printWriter.printf("%.1f", tempo);
+        	// Verifica se o novo tempo é menor do que o recorde atual
+        	if (tempo > recordeAtual) {
+            	System.out.println("Novo recorde estabelecido: " + tempo);
 
-			printWriter.close();
-			fileWriter.close();
+            	FileWriter fileWriter = new FileWriter(caminhoArquivo);
+            	PrintWriter printWriter = new PrintWriter(fileWriter);
+            	printWriter.printf("%.1f", tempo);
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+            	printWriter.close();
+            	fileWriter.close();
+        } else {
+            System.out.println("Recorde não foi quebrado. Recorde atual: " + recordeAtual);
+        }
+
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
+private double lerRecordeAtual(String caminhoArquivo) {
+    try {
+        Scanner scanner = new Scanner( new File(caminhoArquivo));
+        if (scanner.hasNextDouble()) {
+            double recorde = scanner.nextDouble();
+            scanner.close(); //
+            return recorde;
+        }
+        scanner.close();
+    } catch (FileNotFoundException e) {
+        // Se o arquivo não existe, retorna 0 indicando que não há recorde ainda
+        return 0;
+    }
+    return 0;
+}
+
 
 }
