@@ -86,8 +86,4 @@ public class telainicio extends JFrame {
         System.exit(0);
     }
 
-    public static void main(String[] args) {
-        telainicio telaInicio = new telainicio();
-        telaInicio.setVisible(true);
-    }
 }
