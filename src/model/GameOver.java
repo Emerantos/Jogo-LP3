@@ -64,6 +64,8 @@ public class GameOver extends JPanel {
                         }
                     }
                 }, 0, 1000);
+                Game.sonic.initializeFrames();
+                Game.sonic.sprite = true;
                 Game.velocidade = 1.0;
                 Game.sonic.posX = 100;
                 Game.sonic.posY = 550;
@@ -81,23 +83,22 @@ public class GameOver extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        double tempo = lerTempoDoArquivo();
-        double recorde = lerTempoDoArquivoRecord();
+        double att = lerTempoDoArquivo();
+        double r = lerTempoDoArquivoRecord();
         Graphics2D graficos = (Graphics2D) g;
-        if (tempo >= recorde) {
+        if (att >= r) {
             try {
                 String caminhoArquivo = "record\\record.txt";
-                graficos.drawImage(new ImageIcon("assets\\HighScore.png").getImage(), 0, 0, null);
+
                 FileWriter fileWriter = new FileWriter(caminhoArquivo);
                 PrintWriter printWriter = new PrintWriter(fileWriter);
                 printWriter.printf("%.1f", Game.tempo);
                 fileWriter.close();
-                
             } catch (Exception e) {
                 // TODO: handle exception
             }
-           
-        } else if(recorde>tempo) {
+            graficos.drawImage(new ImageIcon("assets\\HighScore.png").getImage(), 0, 0, null);
+        } else {
             graficos.drawImage(new ImageIcon("assets\\GameOver.png").getImage(), 0, 0, null);
         }
         graficos.setFont(fonte);
@@ -108,36 +109,31 @@ public class GameOver extends JPanel {
     private double lerTempoDoArquivo() {
         try {
             String caminhoArquivo = "record\\tempo.txt";
+
             Scanner scanner = new Scanner(new File(caminhoArquivo));
-    
             if (scanner.hasNextDouble()) {
-                double tempo = scanner.nextDouble();
-                scanner.close();
-                return tempo;
+                return scanner.nextDouble();
             }
-            scanner.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return 0.0;
     }
-    
+
     private double lerTempoDoArquivoRecord() {
         try {
             String caminhoArquivo = "record\\record.txt";
+
+            /* tempo usuario e tempo record */
             Scanner scanner = new Scanner(new File(caminhoArquivo));
-    
             if (scanner.hasNextDouble()) {
-                double recorde = scanner.nextDouble();
-                scanner.close();
-                return recorde;
+                return scanner.nextDouble();
             }
-            scanner.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return 0.0;
     }
-    
+
     
 }

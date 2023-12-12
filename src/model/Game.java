@@ -11,12 +11,8 @@ import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Consumer;
-
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import controller.MainController;
-import view.Main;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -103,7 +99,6 @@ public class Game extends JPanel {
 			public void run() {
 				if (jogoEncerrado == false) {
 					tempo++;
-					
 				}
 			}
 		}, 0, 1000);
@@ -225,65 +220,40 @@ public class Game extends JPanel {
 		jogoEncerrado = true;
 		timerTempo.cancel();
 		salvaTempo(tempo);
-		salvaRecorde(tempo);
+
 		MainController.getInstance().telaGameOver();
 	}
-/* */
-private void salvaRecorde(double tempo) {
-    try {
-        String caminhoRecorde = "record\\record.txt";
 
-        // Lê o recorde atual
-        double recordeAtual = lerRecordeAtual(caminhoRecorde);
+	private void salvaTempo(double tempo) {
+		try {
+			String caminhoArquivo = "record\\tempo.txt";
 
-        // Verifica se o novo tempo é maior do que o recorde atual
-        if (tempo > recordeAtual) {
+			FileWriter fileWriter = new FileWriter(caminhoArquivo);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
 
-            // Salva o novo recorde no arquivo
-            FileWriter fileWriter = new FileWriter(caminhoRecorde);
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-            printWriter.printf("%.1f", tempo);
-            printWriter.close();
-            fileWriter.close();
+			printWriter.printf("%.1f", tempo);
 
-        } 
+			printWriter.close();
+			fileWriter.close();
 
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-private double lerRecordeAtual(String caminhoArquivo) {
-    double recorde = 0;
-    try {
-        Scanner scanner = new Scanner(new File(caminhoArquivo));
-
-        if (scanner.hasNextDouble()) {
-            recorde = scanner.nextDouble();
-        }
-
-        scanner.close();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-    return recorde;
-}
-
-private void salvaTempo(double tempo) {
-    try {
-        String caminhoTempo = "record\\tempo.txt";
-
-        // Salva o tempo no arquivo
-        FileWriter fileWriter = new FileWriter(caminhoTempo);
-        PrintWriter printWriter = new PrintWriter(fileWriter);
-        printWriter.printf("%.1f", tempo);
-        printWriter.close();
-        fileWriter.close();
-
-        // Adicione um log para verificar se o tempo está sendo salvo
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}
-
+	private double lerRecordeAtual(String caminhoArquivo) {
+    	try {
+        	Scanner scanner = new Scanner( new File(caminhoArquivo));
+        	if (scanner.hasNextDouble()) {
+            	double recorde = scanner.nextDouble();
+            	scanner.close(); //
+            	return recorde;
+        	}
+        	scanner.close();
+    	} catch (FileNotFoundException e) {
+        	// Se o arquivo não existe, retorna 0 indicando que não há recorde ainda
+        	return 0;
+    	}
+   		return 0;
+	}
 }

@@ -7,6 +7,6 @@ public class Main {
 
         telainicio telainicio = new telainicio();
         telainicio.setVisible(true);
-        
+
     }
 }

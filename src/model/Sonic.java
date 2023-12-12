@@ -7,7 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class Sonic {
-    private BufferedImage spriteSheet; // A imagem contendo a sprite completa
+    public BufferedImage spriteSheet; // A imagem contendo a sprite completa
     private BufferedImage[] frames; // Vetor de imagens para armazenar partes da sprite
     private int currentFrame; // Índice do quadro atual na animação
     private int frameWidth; // Largura de cada quadro na sprite
@@ -59,6 +59,15 @@ public class Sonic {
             frameWidth = 128; // Ajuste conforme necessário
             frameHeight = 80;
             sprite = true;
+        } else {
+            try {
+                spriteSheet = ImageIO.read(new File("assets\\sonicCorrendo.png"));
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            frameWidth = 128; // Ajuste conforme necessário
+            frameHeight = 104;
         }
         // Calcula o número total de quadros horizontalmente na sprite
         int numFrames = spriteSheet.getWidth() / frameWidth;
